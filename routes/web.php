@@ -1,5 +1,17 @@
 <?php
 
+use App\Http\Controllers\WelcomeController;
+use \App\Http\Controllers\ProfileController;
+use \App\Http\Controllers\DashboardController;
+use \App\Http\Controllers\FAQController;
+use \App\Http\Controllers\ViewController;
+use \App\Http\Controllers\MotivationController;
+use \App\Http\Controllers\ProfessionController;
+use \App\Http\Controllers\ArticleController;
+use \App\Http\Controllers\GradeController;
+
+use \App\Http\Controllers\PostController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,21 +25,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/posts/{post}',  function($post){
-    $posts = [
-        'my-first-post' => 'Hello, this is my first blog post!',
-        'my-second-post' => 'Now I am getting the hang of this blogging thing.'
-    ];
+Route::get('/', [WelcomeController::class, 'returnHomePage']);
 
-    if (!array_key_exists($post, $posts)) {
-        abort(404, 'Sorry, that post was not found.');
-    }
+Route::get('/home', [WelcomeController::class, 'returnHomePage']);
 
-    return view('post', [
-        'post' => $posts[$post]
-    ]);
-});
+Route::get('/profile', [ProfileController::class, 'returnProfilePage'])->middleware(['auth']);
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/dashboard', [DashboardController::class, 'returnDashboardPage'])->name("dashboard");
+
+Route::get('/motivation', [MotivationController::class, 'returnMotivationPage']);
+
+Route::get('/view', [ViewController::class, 'returnViewPage']);
+
+Route::resource('/profession', ProfessionController::class);
+
+Route::resource('/FAQ', FAQController::class);
+
+Route::resource('/grade', GradeController::class)->middleware(['auth']);
+
+require __DIR__.'/auth.php';
